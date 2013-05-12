@@ -16,7 +16,14 @@ class D3
     js += "<script type='text/javascript'>\n"
     js += "d3"
     actions.each do |a|
-      args = a[:args].map {|x| x.is_a?(Array) ? "#{x}" : "'#{x}'"}
+      args = a[:args].map { |x|
+        # TODO: need to deal with embedded javascript functions more properly.
+        if x.is_a?(Array) || x.start_with?('function')
+          "#{x}"
+        else
+          "'#{x}'"
+        end
+      }
       js << ".#{a[:name]}(#{args.join(',')})"
     end
     js << "\n</script>"
